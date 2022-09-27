@@ -27,6 +27,10 @@ public class Recipe {
     public Recipe() {
     }
 
+    public Recipe(String recipeName) {
+        this.recipeName = recipeName;
+    }
+
     public Recipe(String recipeName, RecipeInstruction instruction) {
         this.recipeName = recipeName;
         this.instruction = instruction;
