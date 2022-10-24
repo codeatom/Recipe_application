@@ -1,27 +1,27 @@
 package recipe_application.application.data.service;
 
+import recipe_application.application.dto.forms.ingredientForm.CreateIngredientForm;
+import recipe_application.application.dto.forms.ingredientForm.UpdateIngredientForm;
+import recipe_application.application.dto.views.IngredientView;
 import recipe_application.application.model.Ingredient;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.Optional;
 
 
 public interface IngredientService {
 
-    Ingredient save (Ingredient ingredient);
+    IngredientView save (CreateIngredientForm createIngredientForm);
 
-    List<Ingredient> saveAll(List<Ingredient> ingredientList);
+    IngredientView findById(Integer id);
 
-    Optional<Ingredient> findById(Integer id);
+    Collection<IngredientView> findAll();
 
-    Collection<Ingredient> findAll();
+    IngredientView findByIngredientNameIgnoreCase(String ingredientName);
 
-    Optional<Ingredient> findByIngredientNameIgnoreCase(String ingredientName);
+    List<IngredientView> findByIngredientNameContainsIgnoreCase(String ingredientName);
 
-    List<Ingredient> findByIngredientNameContainsIgnoreCase(String ingredientName);
-
-    Ingredient update (Ingredient ingredient);
+    IngredientView update(UpdateIngredientForm updateIngredientForm);
 
     boolean deleteById(Integer id);
 

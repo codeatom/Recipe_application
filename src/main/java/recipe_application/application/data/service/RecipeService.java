@@ -1,35 +1,35 @@
 package recipe_application.application.data.service;
 
+import recipe_application.application.dto.forms.recipeForm.CreateRecipeForm;
+import recipe_application.application.dto.forms.recipeForm.UpdateRecipeForm;
+import recipe_application.application.dto.views.RecipeView;
 import recipe_application.application.model.Recipe;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.Optional;
 
 
 public interface RecipeService {
 
-    Recipe save (Recipe recipe);
+    RecipeView save(CreateRecipeForm createRecipeForm);
 
-    List<Recipe> saveAll(List<Recipe> recipeList);
+    RecipeView findById(Integer id);
 
-    Optional<Recipe> findById(Integer id);
+    Collection<RecipeView> findAll();
 
-    Collection<Recipe> findAll();
-
-    Recipe update (Recipe recipe);
+    RecipeView update (UpdateRecipeForm updateRecipeForm);
 
     boolean deleteById(Integer id);
 
     boolean  delete(Recipe recipe);
 
-    List<Recipe> findAllByInstructionId(Integer id);
+    List<RecipeView> findAllByInstructionId(Integer id);
 
-    List<Recipe> findAllByCategoriesCategory(String category);
+    List<RecipeView> findAllByCategoriesCategory(String category);
 
-    List<Recipe> findAllByRecipeNameContainingIgnoreCase(String recipeName);
+    List<RecipeView> findAllByRecipeNameContainingIgnoreCase(String recipeName);
 
-    List<Recipe> findDistinctByCategoriesCategoryIn(Collection<String> categories);
+    List<RecipeView> findDistinctByCategoriesCategoryIn(Collection<String> categories);
 
-    List<Recipe> findAllByRecipeIngredientsIngredientIngredientName(String ingredientName);
+    List<RecipeView> findAllByRecipeIngredientsIngredientIngredientName(String ingredientName);
 }

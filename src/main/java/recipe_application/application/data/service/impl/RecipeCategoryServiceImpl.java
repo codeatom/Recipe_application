@@ -2,15 +2,18 @@ package recipe_application.application.data.service.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import recipe_application.application.data.converter.Converter;
 import recipe_application.application.data.repo.RecipeCategoryRepository;
 import recipe_application.application.data.repo.RecipeRepository;
 import recipe_application.application.data.service.RecipeCategoryService;
+import recipe_application.application.dto.forms.recipeCategoryForm.CreateRecipeCategoryForm;
+import recipe_application.application.dto.forms.recipeCategoryForm.UpdateRecipeCategoryForm;
+import recipe_application.application.dto.views.RecipeCategoryView;
 import recipe_application.application.model.Recipe;
 import recipe_application.application.model.RecipeCategory;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.Optional;
 
 
 @Service
@@ -18,54 +21,60 @@ public class RecipeCategoryServiceImpl implements RecipeCategoryService {
 
     private final RecipeCategoryRepository recipeCategoryRepository;
     private final RecipeRepository recipeRepository;
+    private final Converter converter;
 
     @Autowired
-    public RecipeCategoryServiceImpl(RecipeCategoryRepository recipeCategoryRepository, RecipeRepository recipeRepository) {
+    public RecipeCategoryServiceImpl(RecipeCategoryRepository recipeCategoryRepository, RecipeRepository recipeRepository, Converter converter) {
         this.recipeCategoryRepository = recipeCategoryRepository;
         this.recipeRepository = recipeRepository;
+        this.converter = converter;
     }
 
     @Override
-    public RecipeCategory save(RecipeCategory recipeCategory) {
-        if(recipeCategory == null ){
-            throw new IllegalArgumentException ("recipeCategory is null");
+    public RecipeCategoryView save(CreateRecipeCategoryForm createRecipeCategoryForm) {
+        if(createRecipeCategoryForm == null ){
+            throw new IllegalArgumentException ("createRecipeCategoryForm is null");
         }
 
-        return recipeCategoryRepository.save(recipeCategory);
+        RecipeCategory recipeCategory = recipeCategoryRepository.save(new RecipeCategory(createRecipeCategoryForm.getCategory()));
+        return converter.recipeCategoryToView(recipeCategory);
     }
 
     @Override
-    public List<RecipeCategory> saveAll(List<RecipeCategory> recipeCategoryList){
-        if(recipeCategoryList == null ){
-            throw new IllegalArgumentException ("recipeCategoryList is null");
-        }
-
-        return (List<RecipeCategory>) recipeCategoryRepository.saveAll(recipeCategoryList);
-    }
-
-    @Override
-    public Optional<RecipeCategory> findById(Integer id) {
+    public RecipeCategoryView findById(Integer id) {
         if(id < 1 ){
             throw new IllegalArgumentException ("id is 0");
         }
 
         return recipeCategoryRepository.findById(id).isPresent() ?
-                Optional.of(recipeCategoryRepository.findById(id).get()) :
-                Optional.empty();
+                converter.recipeCategoryToView(recipeCategoryRepository.findById(id).get()) :
+                null;
     }
 
     @Override
-    public Collection<RecipeCategory> findAll() {
-        return (Collection<RecipeCategory>) recipeCategoryRepository.findAll();
+    public Collection<RecipeCategoryView> findAll() {
+        Collection<RecipeCategory> recipeCategoryList = (Collection<RecipeCategory>) recipeCategoryRepository.findAll();
+        return converter.recipeCategoryListToViewList(recipeCategoryList);
     }
 
     @Override
-    public RecipeCategory update(RecipeCategory recipeCategory) {
-        if(recipeCategory == null ){
-            throw new IllegalArgumentException ("recipeCategory is null");
+    public RecipeCategoryView update(UpdateRecipeCategoryForm updateRecipeCategoryForm) {
+        if(updateRecipeCategoryForm == null ){
+            throw new IllegalArgumentException ("updateRecipeCategoryForm is null");
         }
 
-        return save(recipeCategory);
+        RecipeCategory recipeCategory = recipeCategoryRepository.findById(updateRecipeCategoryForm.getId()).isPresent() ?
+                recipeCategoryRepository.findById(updateRecipeCategoryForm.getId()).get() :
+                null;
+
+        if(recipeCategory == null){
+            return null;
+        }
+
+        recipeCategory.setCategory(updateRecipeCategoryForm.getCategory());
+        recipeCategoryRepository.save(recipeCategory);
+
+        return converter.recipeCategoryToView(recipeCategory);
     }
 
     @Override
@@ -99,7 +108,7 @@ public class RecipeCategoryServiceImpl implements RecipeCategoryService {
     }
 
     private void removeAssociatedEntity(Integer id){
-        RecipeCategory recipeCategory = findById(id).get();
+        RecipeCategory recipeCategory = recipeCategoryRepository.findById(id).get();
         List<Recipe> recipeList = (List<Recipe>) recipeRepository.findAll();
 
         recipeList.forEach(recipe -> recipe.getCategories().remove(recipeCategory));

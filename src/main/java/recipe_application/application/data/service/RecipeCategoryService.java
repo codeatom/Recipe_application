@@ -1,23 +1,22 @@
 package recipe_application.application.data.service;
 
+import recipe_application.application.dto.forms.recipeCategoryForm.CreateRecipeCategoryForm;
+import recipe_application.application.dto.forms.recipeCategoryForm.UpdateRecipeCategoryForm;
+import recipe_application.application.dto.views.RecipeCategoryView;
 import recipe_application.application.model.RecipeCategory;
 
 import java.util.Collection;
-import java.util.List;
-import java.util.Optional;
 
 
 public interface RecipeCategoryService {
 
-    RecipeCategory save (RecipeCategory recipeCategory);
+    RecipeCategoryView save(CreateRecipeCategoryForm createRecipeCategoryForm);
 
-    List<RecipeCategory> saveAll(List<RecipeCategory> recipeCategoryList);
+    RecipeCategoryView findById(Integer id);
 
-    Optional<RecipeCategory> findById(Integer id);
+    Collection<RecipeCategoryView> findAll();
 
-    Collection<RecipeCategory> findAll();
-
-    RecipeCategory update (RecipeCategory recipeCategory);
+    RecipeCategoryView update(UpdateRecipeCategoryForm updateRecipeCategoryForm);
 
     boolean deleteById(Integer id);
 

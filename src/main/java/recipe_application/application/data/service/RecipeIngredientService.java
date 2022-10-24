@@ -1,25 +1,25 @@
 package recipe_application.application.data.service;
 
+import recipe_application.application.dto.forms.recipeIngredientForm.CreateRecipeIngredientForm;
+import recipe_application.application.dto.forms.recipeIngredientForm.UpdateRecipeIngredientForm;
+import recipe_application.application.dto.views.RecipeIngredientView;
 import recipe_application.application.model.RecipeIngredient;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.Optional;
 
 
 public interface RecipeIngredientService {
 
-    RecipeIngredient save (RecipeIngredient recipeIngredient);
+    RecipeIngredientView save(CreateRecipeIngredientForm recipeIngredientForm);
 
-    List<RecipeIngredient> saveAll(List<RecipeIngredient> recipeIngredientList);
+    RecipeIngredientView findById(Integer id);
 
-    Optional<RecipeIngredient> findById(Integer id);
+    Collection<RecipeIngredientView> findAll();
 
-    Collection<RecipeIngredient> findAll();
+    List<RecipeIngredientView> findAllByIngredientId(Integer id);
 
-    List<RecipeIngredient> findAllByIngredientId(Integer id);
-
-    RecipeIngredient update (RecipeIngredient recipeIngredient);
+    RecipeIngredientView update(UpdateRecipeIngredientForm updateRecipeIngredientForm);
 
     boolean deleteById(Integer id);
 
