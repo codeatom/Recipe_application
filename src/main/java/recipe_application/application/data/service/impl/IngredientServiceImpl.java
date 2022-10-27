@@ -2,6 +2,7 @@ package recipe_application.application.data.service.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import recipe_application.application.data.converter.Converter;
 import recipe_application.application.data.repo.IngredientRepository;
 import recipe_application.application.data.repo.RecipeIngredientRepository;
@@ -18,6 +19,7 @@ import java.util.Collection;
 import java.util.List;
 
 
+@Transactional
 @Service
 public class IngredientServiceImpl implements IngredientService {
 
@@ -39,6 +41,7 @@ public class IngredientServiceImpl implements IngredientService {
         }
 
         Ingredient ingredient = ingredientRepository.save(new Ingredient(createIngredientForm.getIngredientName()));
+
         return converter.ingredientToView(ingredient);
     }
 
@@ -92,16 +95,11 @@ public class IngredientServiceImpl implements IngredientService {
             throw new IllegalArgumentException ("updateIngredientForm is null");
         }
 
-        Ingredient ingredient = ingredientRepository.findById(updateIngredientForm.getId()).isPresent() ?
-                ingredientRepository.findById(updateIngredientForm.getId()).get() :
-                null;
-
-        if(ingredient == null){
-            throw new ResourceNotFoundException("Ingredient with id " + updateIngredientForm.getId() + " not found.");
-        }
+        Ingredient ingredient = ingredientRepository
+                .findById(updateIngredientForm.getId())
+                .orElseThrow(() -> new ResourceNotFoundException("Ingredient with id " + updateIngredientForm.getId() + " not found."));
 
         ingredient.setIngredientName(updateIngredientForm.getIngredientName());
-        ingredientRepository.save(ingredient);
 
         return converter.ingredientToView(ingredient);
     }

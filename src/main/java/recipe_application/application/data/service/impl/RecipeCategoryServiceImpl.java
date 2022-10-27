@@ -2,6 +2,7 @@ package recipe_application.application.data.service.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import recipe_application.application.data.converter.Converter;
 import recipe_application.application.data.repo.RecipeCategoryRepository;
 import recipe_application.application.data.repo.RecipeRepository;
@@ -17,6 +18,7 @@ import java.util.Collection;
 import java.util.List;
 
 
+@Transactional
 @Service
 public class RecipeCategoryServiceImpl implements RecipeCategoryService {
 
@@ -38,6 +40,7 @@ public class RecipeCategoryServiceImpl implements RecipeCategoryService {
         }
 
         RecipeCategory recipeCategory = recipeCategoryRepository.save(new RecipeCategory(createRecipeCategoryForm.getCategory()));
+
         return converter.recipeCategoryToView(recipeCategory);
     }
 
@@ -66,16 +69,11 @@ public class RecipeCategoryServiceImpl implements RecipeCategoryService {
             throw new IllegalArgumentException ("updateRecipeCategoryForm is null");
         }
 
-        RecipeCategory recipeCategory = recipeCategoryRepository.findById(updateRecipeCategoryForm.getId()).isPresent() ?
-                recipeCategoryRepository.findById(updateRecipeCategoryForm.getId()).get() :
-                null;
-
-        if(recipeCategory == null){
-            throw new ResourceNotFoundException("Recipe Category with id " + updateRecipeCategoryForm.getId() + " not found.");
-        }
+        RecipeCategory recipeCategory = recipeCategoryRepository
+                .findById(updateRecipeCategoryForm.getId())
+                .orElseThrow(() -> new ResourceNotFoundException("Recipe Category with id " + updateRecipeCategoryForm.getId() + " not found."));
 
         recipeCategory.setCategory(updateRecipeCategoryForm.getCategory());
-        recipeCategoryRepository.save(recipeCategory);
 
         return converter.recipeCategoryToView(recipeCategory);
     }

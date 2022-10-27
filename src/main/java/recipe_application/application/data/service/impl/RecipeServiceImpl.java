@@ -2,6 +2,7 @@ package recipe_application.application.data.service.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import recipe_application.application.data.converter.Converter;
 import recipe_application.application.data.repo.RecipeCategoryRepository;
 import recipe_application.application.data.repo.RecipeIngredientRepository;
@@ -15,10 +16,12 @@ import recipe_application.application.exception.ResourceNotFoundException;
 import recipe_application.application.model.Recipe;
 import recipe_application.application.model.RecipeCategory;
 import recipe_application.application.model.RecipeIngredient;
+import recipe_application.application.model.RecipeInstruction;
 
 import java.util.*;
 
 
+@Transactional
 @Service
 public class RecipeServiceImpl implements RecipeService {
 
@@ -49,8 +52,13 @@ public class RecipeServiceImpl implements RecipeService {
             throw new IllegalArgumentException ("createRecipeForm is null");
         }
 
+        RecipeInstruction recipeInstruction = recipeInstructionRepository
+                .findById(createRecipeForm.getInstructionId())
+                .orElseThrow(() -> new ResourceNotFoundException("Recipe instruction with id " + createRecipeForm.getInstructionId() + " not found."));
+
         Recipe recipe = new Recipe(createRecipeForm.getRecipeName());
-        recipe.setInstruction(recipeInstructionRepository.findById(createRecipeForm.getInstructionId()).get());
+        recipe.setInstruction(recipeInstruction);
+
         Recipe savedRecipe = recipeRepository.save(recipe);
 
         return converter.recipeToView(savedRecipe);
@@ -130,17 +138,16 @@ public class RecipeServiceImpl implements RecipeService {
             throw new IllegalArgumentException ("updateRecipeForm is null");
         }
 
-        Recipe recipe= recipeRepository.findById(updateRecipeForm.getId()).isPresent() ?
-                recipeRepository.findById(updateRecipeForm.getId()).get() :
-                null;
+        Recipe recipe = recipeRepository
+                .findById(updateRecipeForm.getId())
+                .orElseThrow(() -> new ResourceNotFoundException("Recipe with id " + updateRecipeForm.getId() + " not found."));
 
-        if(recipe == null){
-            throw new ResourceNotFoundException("Recipe with id " + updateRecipeForm.getId() + " not found.");
-        }
+        RecipeInstruction recipeInstruction = recipeInstructionRepository
+                .findById(updateRecipeForm.getInstructionId())
+                .orElseThrow(() -> new ResourceNotFoundException("Recipe instruction with id " + updateRecipeForm.getInstructionId() + " not found."));
 
         recipe.setRecipeName(updateRecipeForm.getRecipeName());
-        recipe.setInstruction(recipeInstructionRepository.findById(updateRecipeForm.getInstructionId()).get());
-        recipeRepository.save(recipe);
+        recipe.setInstruction(recipeInstruction);
 
         return converter.recipeToView(recipe);
     }

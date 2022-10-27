@@ -2,6 +2,7 @@ package recipe_application.application.data.service.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import recipe_application.application.data.converter.Converter;
 import recipe_application.application.data.repo.RecipeInstructionRepository;
 import recipe_application.application.data.repo.RecipeRepository;
@@ -17,6 +18,7 @@ import java.util.Collection;
 import java.util.List;
 
 
+@Transactional
 @Service
 public class RecipeInstructionServiceImpl implements RecipeInstructionService {
 
@@ -43,6 +45,7 @@ public class RecipeInstructionServiceImpl implements RecipeInstructionService {
         );
 
         RecipeInstruction savedRecipeInstruction = recipeInstructionRepository.save(recipeInstruction);
+
         return converter.recipeInstructionToView(savedRecipeInstruction);
     }
 
@@ -71,17 +74,12 @@ public class RecipeInstructionServiceImpl implements RecipeInstructionService {
             throw new IllegalArgumentException ("updateRecipeInstructionForm is null");
         }
 
-        RecipeInstruction recipeInstruction = recipeInstructionRepository.findById(updateRecipeInstructionForm.getId()).isPresent() ?
-                recipeInstructionRepository.findById(updateRecipeInstructionForm.getId()).get() :
-                null;
-
-        if(recipeInstruction == null){
-            throw new ResourceNotFoundException("Recipe instruction with id " + updateRecipeInstructionForm.getId() + " not found.");
-        }
+        RecipeInstruction recipeInstruction = recipeInstructionRepository
+                .findById(updateRecipeInstructionForm.getId())
+                .orElseThrow(() -> new ResourceNotFoundException("Recipe instruction with id " + updateRecipeInstructionForm.getId() + " not found."));
 
         recipeInstruction.setInstruction(updateRecipeInstructionForm.getInstruction());
         recipeInstruction.setTitle(updateRecipeInstructionForm.getTitle());
-        recipeInstructionRepository.save(recipeInstruction);
 
         return converter.recipeInstructionToView(recipeInstruction);
     }

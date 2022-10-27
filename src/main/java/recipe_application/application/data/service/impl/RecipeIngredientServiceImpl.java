@@ -2,6 +2,7 @@ package recipe_application.application.data.service.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import recipe_application.application.data.converter.Converter;
 import recipe_application.application.data.repo.IngredientRepository;
 import recipe_application.application.data.repo.RecipeIngredientRepository;
@@ -18,6 +19,7 @@ import java.util.Collection;
 import java.util.List;
 
 
+@Transactional
 @Service
 public class RecipeIngredientServiceImpl implements RecipeIngredientService {
 
@@ -38,7 +40,9 @@ public class RecipeIngredientServiceImpl implements RecipeIngredientService {
             throw new IllegalArgumentException ("recipeIngredientForm is null");
         }
 
-        Ingredient ingredient = ingredientRepository.findById(recipeIngredientForm.getIngredientId()).get();
+        Ingredient ingredient = ingredientRepository
+                .findById(recipeIngredientForm.getIngredientId())
+                .orElseThrow(() -> new ResourceNotFoundException("Ingredient with id " + recipeIngredientForm.getIngredientId() + " not found."));
 
         RecipeIngredient recipeIngredient = new RecipeIngredient(
                 recipeIngredientForm.getAmount(),
@@ -84,22 +88,17 @@ public class RecipeIngredientServiceImpl implements RecipeIngredientService {
             throw new IllegalArgumentException ("updateRecipeIngredientForm is null");
         }
 
-        RecipeIngredient recipeIngredient = recipeIngredientRepository.findById(updateRecipeIngredientForm.getId()).isPresent() ?
-                recipeIngredientRepository.findById(updateRecipeIngredientForm.getId()).get() :
-                null;
+        RecipeIngredient recipeIngredient = recipeIngredientRepository
+                .findById(updateRecipeIngredientForm.getId())
+                .orElseThrow(() -> new ResourceNotFoundException("Recipe Ingredient with id " + updateRecipeIngredientForm.getId() + " not found."));
 
-        if(recipeIngredient == null){
-            throw new ResourceNotFoundException("Recipe Ingredient with id " + updateRecipeIngredientForm.getId() + " not found.");
-        }
+        Ingredient ingredient = ingredientRepository
+                .findById(updateRecipeIngredientForm.getIngredientId())
+                .orElseThrow(() -> new ResourceNotFoundException("Ingredient with id " + updateRecipeIngredientForm.getIngredientId() + " not found."));
 
         recipeIngredient.setAmount(updateRecipeIngredientForm.getAmount());
         recipeIngredient.setMeasurement(updateRecipeIngredientForm.getMeasurement());
-
-        if(ingredientRepository.findById(updateRecipeIngredientForm.getIngredientId()).isPresent()){
-            recipeIngredient.setIngredient(ingredientRepository.findById(updateRecipeIngredientForm.getIngredientId()).get());
-        }
-
-        recipeIngredientRepository.save(recipeIngredient);
+        recipeIngredient.setIngredient(ingredient);
 
         return converter.recipeIngredientToView(recipeIngredient);
     }
