@@ -5,11 +5,11 @@ import org.springframework.stereotype.Service;
 import recipe_application.application.data.converter.Converter;
 import recipe_application.application.data.repo.IngredientRepository;
 import recipe_application.application.data.repo.RecipeIngredientRepository;
-import recipe_application.application.data.repo.RecipeRepository;
 import recipe_application.application.data.service.RecipeIngredientService;
 import recipe_application.application.dto.forms.recipeIngredientForm.CreateRecipeIngredientForm;
 import recipe_application.application.dto.forms.recipeIngredientForm.UpdateRecipeIngredientForm;
 import recipe_application.application.dto.views.RecipeIngredientView;
+import recipe_application.application.exception.ResourceNotFoundException;
 import recipe_application.application.model.Ingredient;
 import recipe_application.application.model.RecipeIngredient;
 
@@ -23,14 +23,12 @@ public class RecipeIngredientServiceImpl implements RecipeIngredientService {
 
     private final RecipeIngredientRepository recipeIngredientRepository;
     private final IngredientRepository ingredientRepository;
-    private final RecipeRepository recipeRepository;
     private final Converter converter;
 
     @Autowired
-    public RecipeIngredientServiceImpl(RecipeIngredientRepository recipeIngredientRepository, IngredientRepository ingredientRepository, RecipeRepository recipeRepository, Converter converter) {
+    public RecipeIngredientServiceImpl(RecipeIngredientRepository recipeIngredientRepository, IngredientRepository ingredientRepository, Converter converter) {
         this.recipeIngredientRepository = recipeIngredientRepository;
         this.ingredientRepository = ingredientRepository;
-        this.recipeRepository = recipeRepository;
         this.converter = converter;
     }
 
@@ -58,9 +56,11 @@ public class RecipeIngredientServiceImpl implements RecipeIngredientService {
             throw new IllegalArgumentException ("id is 0");
         }
 
-        return recipeIngredientRepository.findById(id).isPresent() ?
-                converter.recipeIngredientToView(recipeIngredientRepository.findById(id).get()) :
-                null;
+        if(recipeIngredientRepository.findById(id).isPresent()){
+            converter.recipeIngredientToView(recipeIngredientRepository.findById(id).get());
+        }
+
+        throw new ResourceNotFoundException("Recipe ingredient with id " + id + " not found.");
     }
 
     @Override
@@ -89,7 +89,7 @@ public class RecipeIngredientServiceImpl implements RecipeIngredientService {
                 null;
 
         if(recipeIngredient == null){
-            return null;
+            throw new ResourceNotFoundException("Recipe Ingredient with id " + updateRecipeIngredientForm.getId() + " not found.");
         }
 
         recipeIngredient.setAmount(updateRecipeIngredientForm.getAmount());

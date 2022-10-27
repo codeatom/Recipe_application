@@ -9,6 +9,7 @@ import recipe_application.application.data.service.RecipeCategoryService;
 import recipe_application.application.dto.forms.recipeCategoryForm.CreateRecipeCategoryForm;
 import recipe_application.application.dto.forms.recipeCategoryForm.UpdateRecipeCategoryForm;
 import recipe_application.application.dto.views.RecipeCategoryView;
+import recipe_application.application.exception.ResourceNotFoundException;
 import recipe_application.application.model.Recipe;
 import recipe_application.application.model.RecipeCategory;
 
@@ -46,9 +47,11 @@ public class RecipeCategoryServiceImpl implements RecipeCategoryService {
             throw new IllegalArgumentException ("id is 0");
         }
 
-        return recipeCategoryRepository.findById(id).isPresent() ?
-                converter.recipeCategoryToView(recipeCategoryRepository.findById(id).get()) :
-                null;
+        if(recipeCategoryRepository.findById(id).isPresent()){
+            converter.recipeCategoryToView(recipeCategoryRepository.findById(id).get());
+        }
+
+        throw new ResourceNotFoundException("Recipe category with id " + id + " not found.");
     }
 
     @Override
@@ -68,7 +71,7 @@ public class RecipeCategoryServiceImpl implements RecipeCategoryService {
                 null;
 
         if(recipeCategory == null){
-            return null;
+            throw new ResourceNotFoundException("Recipe Category with id " + updateRecipeCategoryForm.getId() + " not found.");
         }
 
         recipeCategory.setCategory(updateRecipeCategoryForm.getCategory());

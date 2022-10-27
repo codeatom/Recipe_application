@@ -9,6 +9,7 @@ import recipe_application.application.data.service.RecipeInstructionService;
 import recipe_application.application.dto.forms.recipeInstructionForm.CreateRecipeInstructionForm;
 import recipe_application.application.dto.forms.recipeInstructionForm.UpdateRecipeInstructionForm;
 import recipe_application.application.dto.views.RecipeInstructionView;
+import recipe_application.application.exception.ResourceNotFoundException;
 import recipe_application.application.model.Recipe;
 import recipe_application.application.model.RecipeInstruction;
 
@@ -51,9 +52,11 @@ public class RecipeInstructionServiceImpl implements RecipeInstructionService {
             throw new IllegalArgumentException ("id is 0");
         }
 
-        return recipeInstructionRepository.findById(id).isPresent() ?
-                converter.recipeInstructionToView(recipeInstructionRepository.findById(id).get()) :
-                null;
+        if(recipeInstructionRepository.findById(id).isPresent()){
+            converter.recipeInstructionToView(recipeInstructionRepository.findById(id).get());
+        }
+
+        throw new ResourceNotFoundException("Recipe instruction with id " + id + " not found.");
     }
 
     @Override
@@ -73,7 +76,7 @@ public class RecipeInstructionServiceImpl implements RecipeInstructionService {
                 null;
 
         if(recipeInstruction == null){
-            return null;
+            throw new ResourceNotFoundException("Recipe instruction with id " + updateRecipeInstructionForm.getId() + " not found.");
         }
 
         recipeInstruction.setInstruction(updateRecipeInstructionForm.getInstruction());

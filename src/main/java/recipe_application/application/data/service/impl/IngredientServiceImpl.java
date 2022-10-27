@@ -9,6 +9,7 @@ import recipe_application.application.data.service.IngredientService;
 import recipe_application.application.dto.forms.ingredientForm.CreateIngredientForm;
 import recipe_application.application.dto.forms.ingredientForm.UpdateIngredientForm;
 import recipe_application.application.dto.views.IngredientView;
+import recipe_application.application.exception.ResourceNotFoundException;
 import recipe_application.application.model.Ingredient;
 import recipe_application.application.model.RecipeIngredient;
 
@@ -47,9 +48,11 @@ public class IngredientServiceImpl implements IngredientService {
             throw new IllegalArgumentException ("id is 0");
         }
 
-        return ingredientRepository.findById(id).isPresent() ?
-                converter.ingredientToView(ingredientRepository.findById(id).get()) :
-                null;
+        if(ingredientRepository.findById(id).isPresent()){
+            return converter.ingredientToView(ingredientRepository.findById(id).get());
+        }
+
+        throw new ResourceNotFoundException("Ingredient with id " + id + " not found.");
     }
 
     @Override
@@ -64,9 +67,11 @@ public class IngredientServiceImpl implements IngredientService {
             throw new IllegalArgumentException ("ingredientName is null");
         }
 
-        return ingredientRepository.findByIngredientNameIgnoreCase(ingredientName).isPresent() ?
-                converter.ingredientToView(ingredientRepository.findByIngredientNameIgnoreCase(ingredientName).get()) :
-                null;
+        if(ingredientRepository.findByIngredientNameIgnoreCase(ingredientName).isPresent()){
+            return converter.ingredientToView(ingredientRepository.findByIngredientNameIgnoreCase(ingredientName).get());
+        }
+
+        throw new ResourceNotFoundException("Ingredient with name " + ingredientName + " not found.");
     }
 
     @Override
@@ -92,7 +97,7 @@ public class IngredientServiceImpl implements IngredientService {
                 null;
 
         if(ingredient == null){
-            return null;
+            throw new ResourceNotFoundException("Ingredient with id " + updateIngredientForm.getId() + " not found.");
         }
 
         ingredient.setIngredientName(updateIngredientForm.getIngredientName());
