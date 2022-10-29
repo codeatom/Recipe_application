@@ -32,14 +32,14 @@ public class RecipeIngredientController {
         return ResponseEntity.ok(recipeIngredientService.findAll());
     }
 
-    @GetMapping("/find-by-id/{id}")
-    public ResponseEntity<RecipeIngredientView> getRecipeIngredientById(@PathVariable("id") Integer id) {
-        return ResponseEntity.ok(recipeIngredientService.findById(id));
-    }
-
-    @GetMapping("/find-by-ingredient/{ingredientId}")
+    @GetMapping("/ingredient-id/{ingredientId}")
     public ResponseEntity<List<RecipeIngredientView>> getRecipeIngredientByIngredientId(@PathVariable("ingredientId") Integer ingredientId) {
         return ResponseEntity.ok(recipeIngredientService.findAllByIngredientId(ingredientId));
+    }
+
+    @GetMapping("/get/{id}")
+    public ResponseEntity<RecipeIngredientView> getRecipeIngredientById(@PathVariable("id") Integer id) {
+        return ResponseEntity.ok(recipeIngredientService.findById(id));
     }
 
     @PostMapping("/add")

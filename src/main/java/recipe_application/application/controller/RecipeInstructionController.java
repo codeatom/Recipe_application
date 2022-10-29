@@ -30,7 +30,7 @@ public class RecipeInstructionController {
         return ResponseEntity.ok(recipeInstructionService.findAll());
     }
 
-    @GetMapping("/find-by-id/{id}")
+    @GetMapping("/get/{id}")
     public ResponseEntity<RecipeInstructionView> getRecipeInstructionById(@PathVariable("id") Integer id) {
         return ResponseEntity.ok(recipeInstructionService.findById(id));
     }

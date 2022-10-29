@@ -26,24 +26,34 @@ public class IngredientController {
         this.ingredientService = ingredientService;
     }
 
-    @GetMapping("/list")
+
     public ResponseEntity<Collection<IngredientView>> getIngredientList() {
         return ResponseEntity.ok(ingredientService.findAll());
     }
 
-    @GetMapping("/find-by-id/{id}")
-    public ResponseEntity<IngredientView> getIngredientById(@PathVariable("id") Integer id) {
-        return ResponseEntity.ok(ingredientService.findById(id));
-    }
-
-    @GetMapping("/find-by-name")
     public ResponseEntity<IngredientView> getIngredientByName(@RequestParam("name") String name) {
         return ResponseEntity.ok(ingredientService.findByIngredientNameIgnoreCase(name));
     }
 
-    @GetMapping("/find-all-by-name")
     public ResponseEntity<List<IngredientView>> getAllIngredientByName(@RequestParam("name") String name) {
         return ResponseEntity.ok(ingredientService.findByIngredientNameContainsIgnoreCase(name));
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<?> searchForIngredient(@RequestParam("search") String search)  {
+        if(search.equalsIgnoreCase("list") || search.equalsIgnoreCase("all")){
+            return getIngredientList();
+        }
+        else if(ingredientService.findByIngredientNameContainsIgnoreCase(search.toLowerCase()).size() > 0){
+            return getAllIngredientByName(search);
+        }
+
+        return getIngredientByName(search);
+    }
+
+    @GetMapping("/get/{id}")
+    public ResponseEntity<IngredientView> getIngredientById(@PathVariable("id") Integer id) {
+        return ResponseEntity.ok(ingredientService.findById(id));
     }
 
     @PostMapping("/add")

@@ -32,19 +32,27 @@ public class RecipeController {
         this.recipeInstructionService = recipeInstructionService;
     }
 
-    @GetMapping("/list")
+
     public ResponseEntity<Collection<RecipeView>> getRecipeList() {
         return ResponseEntity.ok(recipeService.findAll());
     }
 
-    @GetMapping("/find-by-id/{id}")
-    public ResponseEntity<RecipeView> getRecipeById(@PathVariable("id") Integer id) {
-        return ResponseEntity.ok(recipeService.findById(id));
-    }
-
-    @GetMapping("/find-by-name")
     public ResponseEntity<List<RecipeView>> getRecipeByRecipeName(@RequestParam("recipeName") String recipeName) {
         return ResponseEntity.ok(recipeService.findAllByRecipeNameContainingIgnoreCase(recipeName));
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<?> searchForRecipe(@RequestParam("search") String search)  {
+        if(search.equalsIgnoreCase("list") || search.equalsIgnoreCase("all")){
+            return getRecipeList();
+        }
+
+        return getRecipeByRecipeName(search);
+    }
+
+    @GetMapping("/get/{id}")
+    public ResponseEntity<RecipeView> getRecipeById(@PathVariable("id") Integer id) {
+        return ResponseEntity.ok(recipeService.findById(id));
     }
 
     @PostMapping("/add")

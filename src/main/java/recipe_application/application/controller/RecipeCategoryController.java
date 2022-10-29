@@ -30,7 +30,7 @@ public class RecipeCategoryController {
         return ResponseEntity.ok(recipeCategoryService.findAll());
     }
 
-    @GetMapping("/find-by-id/{id}")
+    @GetMapping("/get/{id}")
     public ResponseEntity<RecipeCategoryView> getRecipeCategoryById(@PathVariable("id") Integer id) {
         return ResponseEntity.ok(recipeCategoryService.findById(id));
     }
