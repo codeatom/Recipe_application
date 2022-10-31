@@ -91,6 +91,20 @@ public class RecipeIngredient {
         this.recipe = recipe;
     }
 
+    public void addRecipe(Recipe recipe) {
+        if (recipe == null) throw new IllegalArgumentException("recipe is null");
+
+        setRecipe(recipe);
+        recipe.getRecipeIngredients().add(this);
+    }
+
+    public void removeRecipe(Recipe recipe) {
+        if (recipe == null) throw new IllegalArgumentException("recipe is null");
+
+        setRecipe(null);
+        recipe.getRecipeIngredients().remove(this);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
