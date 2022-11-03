@@ -56,7 +56,7 @@ public class RecipeInstructionServiceImpl implements RecipeInstructionService {
         }
 
         if(recipeInstructionRepository.findById(id).isPresent()){
-            converter.recipeInstructionToView(recipeInstructionRepository.findById(id).get());
+            return converter.recipeInstructionToView(recipeInstructionRepository.findById(id).get());
         }
 
         throw new ResourceNotFoundException("Recipe instruction with id " + id + " not found.");

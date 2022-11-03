@@ -1,5 +1,6 @@
 package recipe_application.application.data.service;
 
+import recipe_application.application.dto.forms.recipeIngredientForm.AddRecipeForm;
 import recipe_application.application.dto.forms.recipeIngredientForm.CreateRecipeIngredientForm;
 import recipe_application.application.dto.forms.recipeIngredientForm.UpdateRecipeIngredientForm;
 import recipe_application.application.dto.views.RecipeIngredientView;
@@ -22,6 +23,10 @@ public interface RecipeIngredientService {
     RecipeIngredientView update(UpdateRecipeIngredientForm updateRecipeIngredientForm);
 
     boolean deleteById(Integer id);
+
+    RecipeIngredientView addRecipe(AddRecipeForm addRecipeForm);
+
+    void removeRecipe(Integer id);
 
     boolean  delete(RecipeIngredient recipeIngredient);
 }

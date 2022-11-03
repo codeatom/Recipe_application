@@ -27,7 +27,10 @@ public class ModelConverter implements Converter{
 
     @Override
     public RecipeIngredientView recipeIngredientToView(RecipeIngredient entity) {
-        return new RecipeIngredientView(entity.getId(), entity.getAmount(), entity.getMeasurement(), entity.getIngredient(), entity.getRecipe());
+        IngredientView ingredientView = ingredientToView(entity.getIngredient());
+        RecipeView recipeView = new RecipeView(entity.getRecipe().getId(), entity.getRecipe().getRecipeName(), entity.getRecipe().getInstruction());
+
+        return new RecipeIngredientView(entity.getId(), entity.getAmount(), entity.getMeasurement(), ingredientView, recipeView);
     }
 
     @Override
@@ -59,12 +62,19 @@ public class ModelConverter implements Converter{
 
     @Override
     public RecipeCategoryView recipeCategoryToView(RecipeCategory entity) {
-        return new RecipeCategoryView(entity.getId(), entity.getCategory(), entity.getRecipes());
+        Set<RecipeView> recipeViewSet = new HashSet<>();
+
+        for (Recipe recipe : entity.getRecipes()){
+            RecipeView recipeView = new RecipeView(recipe.getId(), recipe.getRecipeName(), recipe.getInstruction());
+            recipeViewSet.add(recipeView);
+        }
+
+        return new RecipeCategoryView(entity.getId(), entity.getCategory(), recipeViewSet);
     }
 
     @Override
     public Collection<RecipeCategoryView> recipeCategoryListToViewList(Collection<RecipeCategory> entities) {
-        Collection<RecipeCategoryView> recipeCategoryViews = new ArrayList<>();
+        Collection<RecipeCategoryView> recipeCategoryViews = new HashSet<>();
 
         for(RecipeCategory recipeCategory : entities){
             recipeCategoryViews.add(recipeCategoryToView(recipeCategory));
@@ -75,7 +85,20 @@ public class ModelConverter implements Converter{
 
     @Override
     public RecipeView recipeToView(Recipe entity) {
-        return new RecipeView(entity.getId(), entity.getRecipeName(), entity.getInstruction(), entity.getRecipeIngredients(), entity.getCategories());
+        List<RecipeIngredientView> recipeIngredientViews = new ArrayList<>();
+        Set<RecipeCategoryView> recipeCategoryViews = new HashSet<>();
+
+        for (RecipeIngredient recipeIngredient : entity.getRecipeIngredients()){
+            RecipeIngredientView recipeIngredientView = new RecipeIngredientView(recipeIngredient.getId(), recipeIngredient.getAmount(), recipeIngredient.getMeasurement());
+            recipeIngredientViews.add(recipeIngredientView);
+        }
+
+        for (RecipeCategory recipeCategory : entity.getCategories()){
+            RecipeCategoryView recipeCategoryView = new RecipeCategoryView(recipeCategory.getId(), recipeCategory.getCategory());
+            recipeCategoryViews.add(recipeCategoryView);
+        }
+
+        return new RecipeView(entity.getId(), entity.getRecipeName(), entity.getInstruction(), recipeIngredientViews, recipeCategoryViews);
     }
 
     @Override

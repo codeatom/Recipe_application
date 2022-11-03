@@ -1,5 +1,6 @@
 package recipe_application.application.data.service;
 
+import recipe_application.application.dto.forms.recipeCategoryForm.AddRecipeForm;
 import recipe_application.application.dto.forms.recipeCategoryForm.CreateRecipeCategoryForm;
 import recipe_application.application.dto.forms.recipeCategoryForm.UpdateRecipeCategoryForm;
 import recipe_application.application.dto.views.RecipeCategoryView;
@@ -21,4 +22,8 @@ public interface RecipeCategoryService {
     boolean deleteById(Integer id);
 
     boolean delete(RecipeCategory recipeCategory);
+
+    RecipeCategoryView addRecipe(AddRecipeForm addRecipeForm);
+
+    void removeRecipe(Integer recipeCategoryId, Integer recipeId);
 }

@@ -7,6 +7,7 @@ import recipe_application.application.data.converter.Converter;
 import recipe_application.application.data.repo.RecipeCategoryRepository;
 import recipe_application.application.data.repo.RecipeRepository;
 import recipe_application.application.data.service.RecipeCategoryService;
+import recipe_application.application.dto.forms.recipeCategoryForm.AddRecipeForm;
 import recipe_application.application.dto.forms.recipeCategoryForm.CreateRecipeCategoryForm;
 import recipe_application.application.dto.forms.recipeCategoryForm.UpdateRecipeCategoryForm;
 import recipe_application.application.dto.views.RecipeCategoryView;
@@ -51,7 +52,7 @@ public class RecipeCategoryServiceImpl implements RecipeCategoryService {
         }
 
         if(recipeCategoryRepository.findById(id).isPresent()){
-            converter.recipeCategoryToView(recipeCategoryRepository.findById(id).get());
+            return converter.recipeCategoryToView(recipeCategoryRepository.findById(id).get());
         }
 
         throw new ResourceNotFoundException("Recipe category with id " + id + " not found.");
@@ -106,6 +107,38 @@ public class RecipeCategoryServiceImpl implements RecipeCategoryService {
         }
 
         return false;
+    }
+
+    @Override
+    public RecipeCategoryView addRecipe(AddRecipeForm addRecipeForm){
+        RecipeCategory recipeCategory = recipeCategoryRepository.findById(addRecipeForm.getId()).isPresent() ?
+                recipeCategoryRepository.findById(addRecipeForm.getId()).get() :
+                null;
+
+        if(recipeCategory == null){
+            return null;
+        }
+
+        if(recipeRepository.findById(addRecipeForm.getRecipeId()).isPresent()){
+            recipeCategory.addRecipe(recipeRepository.findById(addRecipeForm.getRecipeId()).get());
+        }
+
+        return converter.recipeCategoryToView(recipeCategory);
+    }
+
+    @Override
+    public void removeRecipe(Integer recipeCategoryId, Integer recipeId){
+        RecipeCategory recipeCategory = recipeCategoryRepository.findById(recipeCategoryId).isPresent() ?
+                recipeCategoryRepository.findById(recipeCategoryId).get() :
+                null;
+
+        Recipe recipe = recipeRepository.findById(recipeId).isPresent() ?
+                recipeRepository.findById(recipeId).get() :
+                null;
+
+        if(recipeCategory != null && recipe != null){
+            recipeCategory.removeRecipe(recipe);
+        }
     }
 
     private void removeAssociatedEntity(Integer id){

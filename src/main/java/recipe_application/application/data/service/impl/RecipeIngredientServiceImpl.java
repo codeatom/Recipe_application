@@ -6,7 +6,9 @@ import org.springframework.transaction.annotation.Transactional;
 import recipe_application.application.data.converter.Converter;
 import recipe_application.application.data.repo.IngredientRepository;
 import recipe_application.application.data.repo.RecipeIngredientRepository;
+import recipe_application.application.data.repo.RecipeRepository;
 import recipe_application.application.data.service.RecipeIngredientService;
+import recipe_application.application.dto.forms.recipeIngredientForm.AddRecipeForm;
 import recipe_application.application.dto.forms.recipeIngredientForm.CreateRecipeIngredientForm;
 import recipe_application.application.dto.forms.recipeIngredientForm.UpdateRecipeIngredientForm;
 import recipe_application.application.dto.views.RecipeIngredientView;
@@ -25,12 +27,14 @@ public class RecipeIngredientServiceImpl implements RecipeIngredientService {
 
     private final RecipeIngredientRepository recipeIngredientRepository;
     private final IngredientRepository ingredientRepository;
+    private final RecipeRepository recipeRepository;
     private final Converter converter;
 
     @Autowired
-    public RecipeIngredientServiceImpl(RecipeIngredientRepository recipeIngredientRepository, IngredientRepository ingredientRepository, Converter converter) {
+    public RecipeIngredientServiceImpl(RecipeIngredientRepository recipeIngredientRepository, IngredientRepository ingredientRepository, RecipeRepository recipeRepository, Converter converter) {
         this.recipeIngredientRepository = recipeIngredientRepository;
         this.ingredientRepository = ingredientRepository;
+        this.recipeRepository = recipeRepository;
         this.converter = converter;
     }
 
@@ -61,7 +65,7 @@ public class RecipeIngredientServiceImpl implements RecipeIngredientService {
         }
 
         if(recipeIngredientRepository.findById(id).isPresent()){
-            converter.recipeIngredientToView(recipeIngredientRepository.findById(id).get());
+            return converter.recipeIngredientToView(recipeIngredientRepository.findById(id).get());
         }
 
         throw new ResourceNotFoundException("Recipe ingredient with id " + id + " not found.");
@@ -131,6 +135,31 @@ public class RecipeIngredientServiceImpl implements RecipeIngredientService {
         }
 
         return false;
+    }
+
+    @Override
+    public RecipeIngredientView addRecipe(AddRecipeForm addRecipeForm){
+        RecipeIngredient recipeIngredient = recipeIngredientRepository.findById(addRecipeForm.getId()).isPresent() ?
+                recipeIngredientRepository.findById(addRecipeForm.getId()).get() :
+                null;
+
+        if(recipeIngredient == null){
+            return null;
+        }
+
+        if(recipeRepository.findById(addRecipeForm.getRecipeId()).isPresent()){
+            recipeIngredient.addRecipe(recipeRepository.findById(addRecipeForm.getRecipeId()).get());
+        }
+
+        return converter.recipeIngredientToView(recipeIngredient);
+    }
+
+    public void removeRecipe(Integer id){
+        if(recipeIngredientRepository.findById(id).isPresent()){
+            RecipeIngredient recipeIngredient = recipeIngredientRepository.findById(id).get();
+
+            recipeIngredient.removeRecipe(recipeIngredient.getRecipe());
+        }
     }
 
     private void removeAssociatedEntity(Integer id){

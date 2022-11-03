@@ -3,7 +3,6 @@ package recipe_application.application.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import recipe_application.application.data.service.RecipeInstructionService;
 import recipe_application.application.dto.forms.recipeInstructionForm.CreateRecipeInstructionForm;
@@ -14,8 +13,9 @@ import javax.validation.Valid;
 import java.util.Collection;
 
 
-@Controller
+@RestController
 @RequestMapping("/api/v1/recipe-instruction")
+@CrossOrigin("*")
 public class RecipeInstructionController {
 
     private final RecipeInstructionService recipeInstructionService;

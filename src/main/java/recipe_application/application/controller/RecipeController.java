@@ -3,10 +3,11 @@ package recipe_application.application.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import recipe_application.application.data.service.RecipeInstructionService;
 import recipe_application.application.data.service.RecipeService;
+import recipe_application.application.dto.forms.recipeForm.AddRecipeCategoryForm;
+import recipe_application.application.dto.forms.recipeForm.AddRecipeIngredientForm;
 import recipe_application.application.dto.forms.recipeForm.CreateRecipeForm;
 import recipe_application.application.dto.forms.recipeForm.UpdateRecipeForm;
 import recipe_application.application.dto.forms.recipeInstructionForm.CreateRecipeInstructionForm;
@@ -19,8 +20,9 @@ import java.util.Collection;
 import java.util.List;
 
 
-@Controller
+@RestController
 @RequestMapping("/api/v1/recipe")
+@CrossOrigin("*")
 public class RecipeController {
 
     private final RecipeService recipeService;
@@ -91,4 +93,33 @@ public class RecipeController {
         recipeService.deleteById(id);
         return ResponseEntity.noContent().build();
     }
+
+    @PostMapping("/add-recipe-ingredient")
+    public ResponseEntity<RecipeView> addRecipeIngredient(@Valid @RequestBody AddRecipeIngredientForm addRecipeIngredientForm) {
+        recipeService.addRecipeIngredient(addRecipeIngredientForm);
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(recipeService.addRecipeIngredient(addRecipeIngredientForm));
+    }
+
+    @GetMapping("/remove-recipe-ingredient/{recipeId}/{recipeIngredientId}")
+    public ResponseEntity<Void> removeRecipeIngredient(@PathVariable("recipeId") Integer recipeId, @PathVariable("recipeIngredientId") Integer recipeIngredientId) {
+        recipeService.removeRecipeIngredient(recipeId, recipeIngredientId);
+
+        return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/add-recipe-category")
+    public ResponseEntity<RecipeView> addRecipeCategory(@Valid @RequestBody AddRecipeCategoryForm addRecipeCategoryForm) {
+        recipeService.addRecipeCategory(addRecipeCategoryForm);
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(recipeService.addRecipeCategory(addRecipeCategoryForm));
+    }
+
+    @GetMapping("/remove-recipe-category/{recipeId}/{recipeCategoryId}")
+    public ResponseEntity<Void> removeRecipeCategory(@PathVariable("recipeId") Integer recipeId, @PathVariable("recipeCategoryId") Integer recipeCategoryId) {
+        recipeService.removeRecipeCategory(recipeId, recipeCategoryId);
+
+        return ResponseEntity.noContent().build();
+    }
+
 }

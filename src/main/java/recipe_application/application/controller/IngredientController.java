@@ -3,7 +3,6 @@ package recipe_application.application.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import recipe_application.application.data.service.IngredientService;
 import recipe_application.application.dto.forms.ingredientForm.CreateIngredientForm;
@@ -15,8 +14,9 @@ import java.util.Collection;
 import java.util.List;
 
 
-@Controller
+@RestController
 @RequestMapping("/api/v1/ingredient")
+@CrossOrigin("*")
 public class IngredientController {
 
     private final IngredientService ingredientService;
