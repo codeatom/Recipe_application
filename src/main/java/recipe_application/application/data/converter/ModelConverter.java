@@ -28,7 +28,11 @@ public class ModelConverter implements Converter{
     @Override
     public RecipeIngredientView recipeIngredientToView(RecipeIngredient entity) {
         IngredientView ingredientView = ingredientToView(entity.getIngredient());
-        RecipeView recipeView = new RecipeView(entity.getRecipe().getId(), entity.getRecipe().getRecipeName(), entity.getRecipe().getInstruction());
+        RecipeView recipeView = null;
+
+        if(entity.getRecipe() != null){
+            recipeView = new RecipeView(entity.getRecipe().getId(), entity.getRecipe().getRecipeName(), entity.getRecipe().getInstruction());
+        }
 
         return new RecipeIngredientView(entity.getId(), entity.getAmount(), entity.getMeasurement(), ingredientView, recipeView);
     }
@@ -64,9 +68,11 @@ public class ModelConverter implements Converter{
     public RecipeCategoryView recipeCategoryToView(RecipeCategory entity) {
         Set<RecipeView> recipeViewSet = new HashSet<>();
 
-        for (Recipe recipe : entity.getRecipes()){
-            RecipeView recipeView = new RecipeView(recipe.getId(), recipe.getRecipeName(), recipe.getInstruction());
-            recipeViewSet.add(recipeView);
+        if(entity.getRecipes().size() > 0){
+            for (Recipe recipe : entity.getRecipes()){
+                RecipeView recipeView = new RecipeView(recipe.getId(), recipe.getRecipeName(), recipe.getInstruction());
+                recipeViewSet.add(recipeView);
+            }
         }
 
         return new RecipeCategoryView(entity.getId(), entity.getCategory(), recipeViewSet);
@@ -88,14 +94,18 @@ public class ModelConverter implements Converter{
         List<RecipeIngredientView> recipeIngredientViews = new ArrayList<>();
         Set<RecipeCategoryView> recipeCategoryViews = new HashSet<>();
 
-        for (RecipeIngredient recipeIngredient : entity.getRecipeIngredients()){
-            RecipeIngredientView recipeIngredientView = new RecipeIngredientView(recipeIngredient.getId(), recipeIngredient.getAmount(), recipeIngredient.getMeasurement());
-            recipeIngredientViews.add(recipeIngredientView);
+        if(entity.getRecipeIngredients().size() > 0){
+            for (RecipeIngredient recipeIngredient : entity.getRecipeIngredients()){
+                RecipeIngredientView recipeIngredientView = new RecipeIngredientView(recipeIngredient.getId(), recipeIngredient.getAmount(), recipeIngredient.getMeasurement());
+                recipeIngredientViews.add(recipeIngredientView);
+            }
         }
 
-        for (RecipeCategory recipeCategory : entity.getCategories()){
-            RecipeCategoryView recipeCategoryView = new RecipeCategoryView(recipeCategory.getId(), recipeCategory.getCategory());
-            recipeCategoryViews.add(recipeCategoryView);
+        if(entity.getCategories().size() > 0){
+            for (RecipeCategory recipeCategory : entity.getCategories()){
+                RecipeCategoryView recipeCategoryView = new RecipeCategoryView(recipeCategory.getId(), recipeCategory.getCategory());
+                recipeCategoryViews.add(recipeCategoryView);
+            }
         }
 
         return new RecipeView(entity.getId(), entity.getRecipeName(), entity.getInstruction(), recipeIngredientViews, recipeCategoryViews);
