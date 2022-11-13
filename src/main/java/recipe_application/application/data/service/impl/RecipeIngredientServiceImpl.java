@@ -77,6 +77,7 @@ public class RecipeIngredientServiceImpl implements RecipeIngredientService {
         return converter.recipeIngredientListToViewList(recipeIngredientList);
     }
 
+    @Override
     public List<RecipeIngredientView> findAllByIngredientId(Integer id) {
         if(id < 1 ){
             throw new IllegalArgumentException ("id is 0");
@@ -84,6 +85,14 @@ public class RecipeIngredientServiceImpl implements RecipeIngredientService {
 
         List<RecipeIngredient> recipeIngredientList = recipeIngredientRepository.findAllByIngredientId(id);
         return new ArrayList<>(converter.recipeIngredientListToViewList(recipeIngredientList));
+    }
+
+    @Override
+    public Collection<RecipeIngredientView> findAllNotAssociatedWithRecipe() {
+        Collection<RecipeIngredient> recipeIngredientList = (Collection<RecipeIngredient>) recipeIngredientRepository.findAll();
+        recipeIngredientList.removeIf(recipeIngredient -> recipeIngredient.getRecipe() != null);
+
+        return converter.recipeIngredientListToViewList(recipeIngredientList);
     }
 
     @Override

@@ -7,18 +7,18 @@ public class AddRecipeIngredientForm {
 
     @NotNull
     @Positive
-    private Integer id;
+    private Integer recipeId;
 
     @NotNull
     @Positive
     private Integer recipeIngredientId;
 
-    public Integer getId() {
-        return id;
+    public Integer getRecipeId() {
+        return recipeId;
     }
 
-    public void setId(Integer id) {
-        this.id = id;
+    public void setRecipeId(Integer recipeId) {
+        this.recipeId = recipeId;
     }
 
     public Integer getRecipeIngredientId() {

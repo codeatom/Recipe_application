@@ -20,6 +20,8 @@ public interface RecipeIngredientService {
 
     List<RecipeIngredientView> findAllByIngredientId(Integer id);
 
+    Collection<RecipeIngredientView> findAllNotAssociatedWithRecipe();
+
     RecipeIngredientView update(UpdateRecipeIngredientForm updateRecipeIngredientForm);
 
     boolean deleteById(Integer id);

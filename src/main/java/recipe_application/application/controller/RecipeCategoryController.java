@@ -56,7 +56,7 @@ public class RecipeCategoryController {
 
     @GetMapping("/remove-recipe/{recipeCategoryId}/{recipeId}")
     public ResponseEntity<Void> removeRecipe(@PathVariable("recipeCategoryId") Integer recipeCategoryId, @PathVariable("recipeId") Integer recipeId) {
-        recipeCategoryService.removeRecipe(recipeId, recipeCategoryId);
+        recipeCategoryService.removeRecipe(recipeCategoryId, recipeId);
 
         return ResponseEntity.noContent().build();
     }

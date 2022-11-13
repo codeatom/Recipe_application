@@ -38,6 +38,11 @@ public class RecipeIngredientController {
         return ResponseEntity.ok(recipeIngredientService.findAllByIngredientId(ingredientId));
     }
 
+    @GetMapping("/non-associated")
+    public ResponseEntity<Collection<RecipeIngredientView>> getAllRecipeIngredientNotAssociatedWithRecipe() {
+        return ResponseEntity.ok(recipeIngredientService.findAllNotAssociatedWithRecipe());
+    }
+
     @GetMapping("/get/{id}")
     public ResponseEntity<RecipeIngredientView> getRecipeIngredientById(@PathVariable("id") Integer id) {
         return ResponseEntity.ok(recipeIngredientService.findById(id));

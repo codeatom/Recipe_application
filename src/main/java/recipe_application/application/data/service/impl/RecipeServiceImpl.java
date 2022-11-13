@@ -9,8 +9,6 @@ import recipe_application.application.data.repo.RecipeIngredientRepository;
 import recipe_application.application.data.repo.RecipeInstructionRepository;
 import recipe_application.application.data.repo.RecipeRepository;
 import recipe_application.application.data.service.RecipeService;
-import recipe_application.application.dto.forms.recipeForm.AddRecipeCategoryForm;
-import recipe_application.application.dto.forms.recipeForm.AddRecipeIngredientForm;
 import recipe_application.application.dto.forms.recipeForm.CreateRecipeForm;
 import recipe_application.application.dto.forms.recipeForm.UpdateRecipeForm;
 import recipe_application.application.dto.views.RecipeView;
@@ -185,17 +183,17 @@ public class RecipeServiceImpl implements RecipeService {
     }
 
     @Override
-    public RecipeView addRecipeIngredient(AddRecipeIngredientForm addRecipeIngredientForm){
-        Recipe recipe = recipeRepository.findById(addRecipeIngredientForm.getId()).isPresent() ?
-                recipeRepository.findById(addRecipeIngredientForm.getId()).get() :
+    public RecipeView addRecipeIngredient(Integer recipeId, Integer recipeIngredientId){
+        Recipe recipe = recipeRepository.findById(recipeId).isPresent() ?
+                recipeRepository.findById(recipeId).get() :
                 null;
 
         if(recipe == null){
             return null;
         }
 
-        if(recipeIngredientRepository.findById(addRecipeIngredientForm.getRecipeIngredientId()).isPresent()){
-            recipe.addIngredient(recipeIngredientRepository.findById(addRecipeIngredientForm.getRecipeIngredientId()).get());
+        if(recipeIngredientRepository.findById(recipeIngredientId).isPresent()){
+            recipe.addIngredient(recipeIngredientRepository.findById(recipeIngredientId).get());
         }
 
         return converter.recipeToView(recipe);
@@ -217,17 +215,17 @@ public class RecipeServiceImpl implements RecipeService {
     }
 
     @Override
-    public RecipeView addRecipeCategory(AddRecipeCategoryForm addRecipeCategoryForm){
-        Recipe recipe = recipeRepository.findById(addRecipeCategoryForm.getId()).isPresent() ?
-                recipeRepository.findById(addRecipeCategoryForm.getId()).get() :
+    public RecipeView addRecipeCategory(Integer recipeId, Integer recipeCategoryId){
+        Recipe recipe = recipeRepository.findById(recipeId).isPresent() ?
+                recipeRepository.findById(recipeId).get() :
                 null;
 
         if(recipe == null){
             return null;
         }
 
-        if(recipeCategoryRepository.findById(addRecipeCategoryForm.getRecipeCategoryId()).isPresent()){
-            recipe.addCategory(recipeCategoryRepository.findById(addRecipeCategoryForm.getRecipeCategoryId()).get());
+        if(recipeCategoryRepository.findById(recipeCategoryId).isPresent()){
+            recipe.addCategory(recipeCategoryRepository.findById(recipeCategoryId).get());
         }
 
         return converter.recipeToView(recipe);

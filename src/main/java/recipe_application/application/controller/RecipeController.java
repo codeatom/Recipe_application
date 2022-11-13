@@ -96,9 +96,9 @@ public class RecipeController {
 
     @PostMapping("/add-recipe-ingredient")
     public ResponseEntity<RecipeView> addRecipeIngredient(@Valid @RequestBody AddRecipeIngredientForm addRecipeIngredientForm) {
-        recipeService.addRecipeIngredient(addRecipeIngredientForm);
+        RecipeView recipeView = recipeService.addRecipeIngredient(addRecipeIngredientForm.getRecipeId(), addRecipeIngredientForm.getRecipeIngredientId());
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(recipeService.addRecipeIngredient(addRecipeIngredientForm));
+        return ResponseEntity.status(HttpStatus.CREATED).body(recipeView);
     }
 
     @GetMapping("/remove-recipe-ingredient/{recipeId}/{recipeIngredientId}")
@@ -110,9 +110,9 @@ public class RecipeController {
 
     @PostMapping("/add-recipe-category")
     public ResponseEntity<RecipeView> addRecipeCategory(@Valid @RequestBody AddRecipeCategoryForm addRecipeCategoryForm) {
-        recipeService.addRecipeCategory(addRecipeCategoryForm);
+        RecipeView recipeView = recipeService.addRecipeCategory(addRecipeCategoryForm.getRecipeId(), addRecipeCategoryForm.getRecipeCategoryId());
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(recipeService.addRecipeCategory(addRecipeCategoryForm));
+        return ResponseEntity.status(HttpStatus.CREATED).body(recipeView);
     }
 
     @GetMapping("/remove-recipe-category/{recipeId}/{recipeCategoryId}")

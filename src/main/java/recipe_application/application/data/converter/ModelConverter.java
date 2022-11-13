@@ -96,7 +96,8 @@ public class ModelConverter implements Converter{
 
         if(entity.getRecipeIngredients().size() > 0){
             for (RecipeIngredient recipeIngredient : entity.getRecipeIngredients()){
-                RecipeIngredientView recipeIngredientView = new RecipeIngredientView(recipeIngredient.getId(), recipeIngredient.getAmount(), recipeIngredient.getMeasurement());
+                IngredientView ingredientView = ingredientToView(recipeIngredient.getIngredient());
+                RecipeIngredientView recipeIngredientView = new RecipeIngredientView(recipeIngredient.getId(), recipeIngredient.getAmount(), recipeIngredient.getMeasurement(), ingredientView);
                 recipeIngredientViews.add(recipeIngredientView);
             }
         }
